@@ -1,0 +1,75 @@
+<app-loading [condition]="isLoading"></app-loading>
+
+<app-toast [message]="toast.message"></app-toast>
+
+<div class="card mb-3" *ngIf="!isLoading">
+  <h4 class="card-header">Domains: 
+	<select id="tdDomain" (change)="getCredentials('page')">
+		<option selected disabled>Select a domain</option>
+		<option *ngFor="let domain of domains">{{domain.name}}</option>
+	</select>
+  </h4>
+  <div class="card" *ngIf="!isEditing">
+		<h4 class="card-header">Add new domain</h4>
+		<div class="card-body">
+			<form class="form-inline" [formGroup]="addDomainForm" (ngSubmit)="addDomain()">
+				<input class="form-control mr-2" type="text" name="name" formControlName="name" placeholder="Name">
+				<button class="btn btn-primary" type="submit" [disabled]="!addDomainForm.valid"><i class="fa fa-floppy-o"></i> Add</button>
+			</form>
+		</div>
+  </div>
+  <div class="card" *ngIf="!isEditing">
+		<h4 class="card-header">Delete domain</h4>
+		<div class="card-body">
+			<form class="form-inline">
+	<select class="form-control mr-2" id="delDomain" >
+		<option selected>Select a domain</option>
+		<option value={{domain._id}} *ngFor="let domain of domains">{{domain.name}}</option>
+	</select>
+            <button class="btn btn-sm btn-danger" (click)="deleteDomain('page')"><i class="fa fa-trash"></i> Delete</button>
+			</form>
+		</div>
+  </div>
+  <div class="card-body" *ngIf="!isEditing">
+		<h4 class="card-header">Credentials</h4>
+    <table class="table table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Username</th>
+          <th scope="col">Password</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="credentials.length === 0">
+        <tr>
+          <td colspan="3">There aren't any credentials to display. Please select a(nother) domain or add new credentials below.</td>
+        </tr>  
+      </tbody>
+      <tbody *ngIf="!isEditing">
+        <tr *ngFor="let credential of credentials">
+          <td *ngIf="!showcredentials; else condition1">***********</td>
+			<ng-template #condition1><td>{{credential.username}}</td></ng-template>
+          <td *ngIf="!showcredentials; else condition2">***********</td>
+			<ng-template #condition2><td>{{credential.password}}</td></ng-template>
+          <td>
+            <button class="btn btn-sm btn-danger" (click)="deleteCredential(credential)"><i class="fa fa-trash"></i> Delete</button>
+			<button class="btn btn-primary" (click)="toggleShowHide()" *ngIf="!showcredentials; else condition3"><i class="fa fa-pencil"></i>Show</button>
+			<ng-template #condition3>
+				<button class="btn btn-primary" (click)="toggleShowHide()"><i class="fa fa-pencil"></i>Hide</button>
+			</ng-template>
+          </td>
+        </tr>  
+      </tbody>
+    </table>
+  </div>
+  <div class="card" *ngIf="!isEditing">
+		<h4 class="card-header">Add new credentials</h4>
+		<div class="card-body">
+			<form class="form-inline" [formGroup]="addCredentialsForm" (ngSubmit)="addCredentials()">
+				<input class="form-control mr-2" type="text" name="cusername" formControlName="cusername" placeholder="Username">
+				<input class="form-control mr-2" type="text" name="cpassword" formControlName="cpassword" placeholder="Password">
+				<button class="btn btn-primary" type="submit" [disabled]="!addCredentialsForm.valid"><i class="fa fa-floppy-o"></i>Add</button>
+			</form>
+		</div>
+  </div>
+</div>
